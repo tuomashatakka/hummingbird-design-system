@@ -15,15 +15,22 @@ interface RootLayoutProps {
   panel:    ReactNode // ← parallel route slot, rendered from src/app/@panel
 }
 
+// The site is served from a sub-path on GitHub Pages (basePath = /<repo>).
+// `next/link` prepends it automatically, but the Header renders plain <a> tags
+// (the package is framework-agnostic), so its hrefs must be prefixed by hand.
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
+const withBase = (href: string) => `${basePath}${href}`
+
 export default function RootLayout ({ children, panel }: RootLayoutProps) {
   return <html suppressHydrationWarning lang='en' data-theme='light'>
     <body>
       <AppStateProvider>
         <Header
+          homeHref={ withBase('/') }
           links={ [
-            { label: 'Home', href: '/' },
-            { label: 'Portfolio', href: '/portfolio' },
-            { label: 'Design system', href: '/design-system' },
+            { label: 'Home', href: withBase('/') },
+            { label: 'Portfolio', href: withBase('/portfolio') },
+            { label: 'Design system', href: withBase('/design-system') },
           ] } />
 
         <main>{children}</main>

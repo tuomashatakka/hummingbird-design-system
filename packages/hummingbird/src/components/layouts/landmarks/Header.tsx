@@ -17,6 +17,13 @@ interface HeaderProps {
 
   /** Primary navigation links. */
   links?: NavLink[]
+
+  /**
+   * Destination of the brand lockup. Defaults to `/`. Override it when the
+   * site is served from a sub-path (e.g. GitHub Pages `basePath`) so the
+   * plain anchor resolves under that prefix instead of the domain root.
+   */
+  homeHref?: string
 }
 
 const DEFAULT_LINKS: NavLink[] = [
@@ -29,7 +36,7 @@ const DEFAULT_LINKS: NavLink[] = [
  * panel controls wired to the global reducer. Uses plain anchors, so it drops
  * into any framework; wrap the links yourself if you want client-side routing.
  */
-export const Header: FC<HeaderProps> = ({ brand = 'Hummingbird', links = DEFAULT_LINKS }) => {
+export const Header: FC<HeaderProps> = ({ brand = 'Hummingbird', links = DEFAULT_LINKS, homeHref = '/' }) => {
   const { theme } = useAppState()
   const dispatch  = useDispatch()
 
@@ -39,7 +46,7 @@ export const Header: FC<HeaderProps> = ({ brand = 'Hummingbird', links = DEFAULT
   }
 
   return <header>
-    <a href='/'>
+    <a href={ homeHref }>
       <Mark />
       <strong>{brand}</strong>
     </a>

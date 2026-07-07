@@ -11,6 +11,10 @@ const config: NextConfig = {
   reactStrictMode:   true,
   output:            isStaticExport ? 'export' : undefined,
   basePath:          basePath.length > 0 ? basePath : undefined,
+  // Expose the basePath to client components. `next/link` prefixes it
+  // automatically, but the framework-agnostic package (Header) renders plain
+  // <a> tags that Next never rewrites — the app has to prefix those itself.
+  env:               { NEXT_PUBLIC_BASE_PATH: basePath },
   images:            { unoptimized: isStaticExport },
   // The design system is a workspace package shipped as compiled ESM in dist/;
   // transpiling it lets Next handle its 'use client' modules cleanly.
