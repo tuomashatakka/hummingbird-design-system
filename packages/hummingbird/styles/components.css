@@ -191,6 +191,11 @@
       color:        var(--color-success);
       border-color: color-mix(in oklch, var(--color-success) 40%, transparent);
     }
+
+    &[data-badge='info'] {
+      color:        var(--color-info);
+      border-color: color-mix(in oklch, var(--color-info) 40%, transparent);
+    }
   }
 
   /* — spinner: hairline circle, accent arc, pure CSS turn — */
@@ -472,6 +477,7 @@
 
     &[data-alert='success'] { border-inline-start-color: var(--color-success); }
     &[data-alert='error']  { border-inline-start-color: var(--color-error); }
+    &[data-alert='info']   { border-inline-start-color: var(--color-info); }
 
     & > strong {
       font-family:    var(--font-display);
@@ -1436,25 +1442,32 @@
   }
 
   [popover] {
-    margin:          0;
-    padding:         var(--space-md);
-    max-inline-size: 22rem;
-    border:          var(--border-hair);
-    background:      var(--paper);
-    color:           var(--ink);
-    box-shadow:      var(--shadow-2);
-    opacity:         0;
-    translate:       0 0.25rem;
-    transition:      opacity var(--snap), translate var(--snap),
-                     display var(--snap) allow-discrete,
-                     overlay var(--snap) allow-discrete;
+    margin:            0;
+    padding:           var(--space-md);
+    max-inline-size:   22rem;
+    border:            var(--border-hair);
+    background:        var(--paper);
+    color:             var(--ink);
+    box-shadow:        var(--shadow-2);
+    transform-origin:  top;
+    /* closed state doubles as the exit target and the entry starting-style,
+       so the panel scales+fades both on open and close — allow-discrete on
+       display/overlay keeps it alive through the out transition. Zero JS. */
+    opacity:           0;
+    scale:             0.97;
+    translate:         0 0.25rem;
+    transition:        opacity var(--snap), scale var(--snap), translate var(--snap),
+                       display var(--snap) allow-discrete,
+                       overlay var(--snap) allow-discrete;
 
     &:popover-open {
       opacity:   1;
+      scale:     1;
       translate: 0 0;
 
       @starting-style {
         opacity:   0;
+        scale:     0.97;
         translate: 0 0.25rem;
       }
     }
@@ -1468,6 +1481,56 @@
       position-try-fallbacks: flip-block, flip-inline;
       margin-block-start:     var(--space-xs);
       inset:                  auto;
+    }
+  }
+
+  /* — context menu: the popover, narrowed to a list of actions.
+     Inherits [popover]'s surface + scale/fade in-and-out transition; only
+     the padding and the row layout change here. — */
+
+  [data-contextmenu] > menu[popover] {
+    padding:         var(--space-xs);
+    min-inline-size: 11rem;
+    max-inline-size: 16rem;
+    list-style:      none;
+
+    & li { margin: 0; }
+
+    & :is(button, a) {
+      display:         flex;
+      align-items:     center;
+      gap:             var(--space-sm);
+      inline-size:     100%;
+      padding:         var(--space-xs) var(--space-sm);
+      font:            inherit;
+      font-size:       var(--text-sm);
+      text-align:      start;
+      text-decoration: none;
+      color:           var(--ink);
+      background:      none;
+      border:          none;
+      cursor:          pointer;
+      transition:      background var(--snap), color var(--snap);
+
+      & > span { flex: 1; }
+      & [data-icon] { flex: none; }
+
+      &:is(:hover, :focus-visible) {
+        outline:    none;
+        background: var(--color-accent-wash);
+      }
+
+      &[data-destructive] {
+        color: var(--color-error);
+
+        &:is(:hover, :focus-visible) { background: var(--color-error-100); }
+      }
+
+      &:is(:disabled, [aria-disabled='true']) {
+        color:      var(--ink-faint);
+        background: none;
+        cursor:     not-allowed;
+      }
     }
   }
 
@@ -1497,6 +1560,7 @@
 
       &[data-kind='success'] { border-inline-start-color: var(--color-success); }
       &[data-kind='error']  { border-inline-start-color: var(--color-error); }
+      &[data-kind='info']   { border-inline-start-color: var(--color-info); }
 
       & p {
         margin:    0;

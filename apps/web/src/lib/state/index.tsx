@@ -6,7 +6,9 @@ import { AppStateProvider, useSelector, useAppState, useDispatch } from './store
 import { BRAND_COLORS } from './types'
 
 
-export const AppStateProviderWithSideEffects = ({ children }: PropsWithChildren) => {
+// Runs *inside* AppStateProvider so useAppState() reads live state — a
+// sibling of the Provider would only ever see the context's default value.
+const StateSideEffects = () => {
   const { theme, palette } = useAppState()
 
   useEffect(() => {
@@ -20,23 +22,26 @@ export const AppStateProviderWithSideEffects = ({ children }: PropsWithChildren)
       const channels = palette[color]
 
       if (channels) {
-        root.style.setProperty(`--${color}-l`, `${channels.lightness}%`)
-        root.style.setProperty(`--${color}-c`, `${channels.chroma}`)
-        root.style.setProperty(`--${color}-h`, `${channels.hue}`)
+        root.style.setProperty(`--color-${color}-l`, `${channels.lightness}%`)
+        root.style.setProperty(`--color-${color}-c`, `${channels.chroma}`)
+        root.style.setProperty(`--color-${color}-h`, `${channels.hue}`)
       }
       else {
-        root.style.removeProperty(`--${color}-l`)
-        root.style.removeProperty(`--${color}-c`)
-        root.style.removeProperty(`--${color}-h`)
+        root.style.removeProperty(`--color-${color}-l`)
+        root.style.removeProperty(`--color-${color}-c`)
+        root.style.removeProperty(`--color-${color}-h`)
       }
     }
   }, [ palette ])
 
-  return <AppStateProvider>
-    {children}
-  </AppStateProvider>
+  return null
 }
 
+export const AppStateProviderWithSideEffects = ({ children }: PropsWithChildren) =>
+  <AppStateProvider>
+    <StateSideEffects />
+    {children}
+  </AppStateProvider>
 
 export {
   useSelector,

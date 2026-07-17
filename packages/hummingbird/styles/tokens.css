@@ -49,6 +49,7 @@
   --color-accent-l:  40%;  --color-accent-c:  0;     --color-accent-h:  85;
   --color-error-l:  40%;  --color-error-c:  0.11;  --color-error-h:  5;
   --color-success-l: 50%;  --color-success-c: 0.05;  --color-success-h: 135;
+  --color-info-l:    52%;  --color-info-c:    0.12;  --color-info-h:    245;
 
   --color-accent-strong-l: calc(var(--color-accent-l) - 9%);
 
@@ -64,6 +65,7 @@
 
   --color-error:  oklch(var(--color-error-l) var(--color-error-c) var(--color-error-h));
   --color-success: oklch(var(--color-success-l) var(--color-success-c) var(--color-success-h));
+  --color-info:    oklch(var(--color-info-l) var(--color-info-c) var(--color-info-h));
 
   /* — color · on-brand ink —
      Type sitting on a brand-color fill. Derived from the fill's own
@@ -78,6 +80,7 @@
   --on-accent:  oklch(from var(--color-accent)  clamp(0.15, (var(--on-ink-threshold) - l) * infinity, 0.98) 0 h);
   --on-error:  oklch(from var(--color-error)  clamp(0.15, (var(--on-ink-threshold) - l) * infinity, 0.98) 0 h);
   --on-success: oklch(from var(--color-success) clamp(0.15, (var(--on-ink-threshold) - l) * infinity, 0.98) 0 h);
+  --on-info:    oklch(from var(--color-info)    clamp(0.15, (var(--on-ink-threshold) - l) * infinity, 0.98) 0 h);
 
   /* — color · variant ramps —
      Nine steps per brand color, 100 (near paper) → 900 (near ink).
@@ -135,6 +138,16 @@
   --color-success-700: color-mix(in oklch, var(--color-success) 72%, var(--ink));
   --color-success-800: color-mix(in oklch, var(--color-success) 55%, var(--ink));
   --color-success-900: color-mix(in oklch, var(--color-success) 38%, var(--ink));
+
+  --color-info-100: color-mix(in oklch, var(--color-info) 10%, var(--paper));
+  --color-info-200: color-mix(in oklch, var(--color-info) 22%, var(--paper));
+  --color-info-300: color-mix(in oklch, var(--color-info) 40%, var(--paper));
+  --color-info-400: color-mix(in oklch, var(--color-info) 65%, var(--paper));
+  --color-info-500: var(--color-info);
+  --color-info-600: color-mix(in oklch, var(--color-info) 88%, var(--ink));
+  --color-info-700: color-mix(in oklch, var(--color-info) 72%, var(--ink));
+  --color-info-800: color-mix(in oklch, var(--color-info) 55%, var(--ink));
+  --color-info-900: color-mix(in oklch, var(--color-info) 38%, var(--ink));
 
   /* — type — */
   --font-base:     system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -204,6 +217,7 @@
   --color-accent-strong-l: calc(var(--color-accent-l) + 12%);
   --color-error-l:        48%; --color-error-c: 0.12;
   --color-success-l:       58%;
+  --color-info-l:          66%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -212,6 +226,7 @@
     --color-accent-strong-l: calc(var(--color-accent-l) + 12%);
     --color-error-l:        48%; --color-error-c: 0.12;
     --color-success-l:       58%;
+    --color-info-l:          66%;
   }
 }
 
@@ -222,5 +237,6 @@
     --on-accent:  contrast-color(var(--color-accent));
     --on-error:  contrast-color(var(--color-error));
     --on-success: contrast-color(var(--color-success));
+    --on-info:    contrast-color(var(--color-info));
   }
 }

@@ -4,7 +4,8 @@ import type { FC } from 'react'
 import { Button, Slider } from 'hummingbird-design-system'
 import { useAppState, useDispatch } from 'Δ/lib/state'
 import { setBrandColor, resetPalette } from 'Δ/lib/state/actions'
-import { BRAND_COLORS, PALETTE_DEFAULTS, type ColorChannels } from 'Δ/lib/state/types'
+import { BRAND_COLORS, PALETTE_DEFAULTS } from 'Δ/lib/state/types'
+import type { ColorChannels } from 'Δ/lib/state/types'
 
 
 const CHANNELS = [ 'lightness', 'chroma', 'hue' ] as const

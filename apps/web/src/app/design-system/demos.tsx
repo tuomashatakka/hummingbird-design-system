@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 import {
-  Button, Checkbox, Dialog, Field, Heading, Input, Panel, Radio, SearchField,
-  Select, Slider, Switch, Textarea,
+  Button, Checkbox, ContextMenu, Dialog, Field, Heading, Input, Panel, Radio,
+  SearchField, Select, Slider, Switch, Textarea,
 } from 'hummingbird-design-system'
 import { pushNotice } from 'Δ/lib/state/actions'
 import { useDispatch } from 'Δ/lib/state'
@@ -30,6 +30,16 @@ export const SelectDemo = () => {
     options={ PLANS }
     value={ plan }
     onChange={ event => setPlan(event.target.value) } />
+}
+
+export const ContextMenuDemo = () => {
+  const dispatch = useDispatch()
+
+  return <ContextMenu label='Actions' items={ [
+    { label: 'Edit',      onSelect: () => dispatch(pushNotice('Edit selected')) },
+    { label: 'Duplicate', onSelect: () => dispatch(pushNotice('Duplicated')) },
+    { label: 'Delete',    onSelect: () => dispatch(pushNotice('Deleted')), destructive: true },
+  ] } />
 }
 
 export const CheckboxDemo = () => {

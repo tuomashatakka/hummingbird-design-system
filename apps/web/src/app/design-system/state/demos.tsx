@@ -2,7 +2,8 @@
 
 import { Button, ButtonGroup } from 'hummingbird-design-system'
 import { createStore } from 'hummingbird-design-system/state'
-import { pushNotice, setPanel, useAppState, useDispatch } from 'Δ/lib/state'
+import { useAppState, useDispatch } from 'Δ/lib/state'
+import { pushNotice, setPanel } from 'Δ/lib/state/actions'
 
 
 // — a complete store in four lines: state, actions, reducer, createStore —

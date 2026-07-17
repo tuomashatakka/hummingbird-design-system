@@ -28,7 +28,7 @@ export const PALETTE_DEFAULTS: Record<BrandColor, ColorChannels> = {
   accent:  { lightness: 40, chroma: 0, hue: 85 },
   error:   { lightness: 40, chroma: 0.11, hue: 5 },
   success: { lightness: 50, chroma: 0.05, hue: 135 },
-  info:    { lightness: 50, chroma: 0.05, hue: 135 },
+  info:    { lightness: 52, chroma: 0.12, hue: 245 },
 }
 
 export interface AppState {

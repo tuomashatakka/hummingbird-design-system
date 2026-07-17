@@ -280,20 +280,81 @@
     resize:         vertical;
   }
 
-  /* — checkbox & radio: native control, ink accent — */
+  /* — checkbox & radio: custom box, ink fill, a mark that draws itself —
+     appearance:none hands us the box; the mark lives in ::after and grows
+     in on :checked (and shrinks back out on uncheck). role='switch' is
+     excluded — the Switch owns its own track/thumb in components.css. */
 
-  input[type='checkbox'],
+  input[type='checkbox']:not([role='switch']),
   input[type='radio'] {
+    appearance:     none;
+    position:       relative;
+    flex:           none;
     inline-size:    1.05rem;
     block-size:     1.05rem;
     padding:        0;
-    border:         none;
-    background:     none;
-    accent-color:   var(--ink);
+    border:         1px solid var(--ink-faint);
+    background:     var(--paper);
     cursor:         pointer;
     vertical-align: text-bottom;
+    transition:     border-color var(--snap), background var(--snap);
 
-    &:disabled { cursor: not-allowed; }
+    &:checked {
+      border-color: var(--ink);
+      background:    var(--ink);
+    }
+
+    &:focus-visible {
+      outline:        2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      cursor:       not-allowed;
+      background:   var(--wash);
+      border-color: var(--line);
+
+      &:checked { background: var(--ink-faint); border-color: var(--ink-faint); }
+    }
+  }
+
+  /* checkbox tick: a rotated corner (right+bottom borders). The short arm
+     (inline-size) draws first, then the long arm (block-size) after a beat,
+     so the tick traces itself on; the delays reverse to erase it on uncheck. */
+  input[type='checkbox']:not([role='switch'])::after {
+    content:            '';
+    position:           absolute;
+    inset-block-start:  0.06rem;
+    inset-inline-start: 0.34rem;
+    inline-size:        0;
+    block-size:         0;
+    border:             solid var(--paper);
+    border-width:       0 2px 2px 0;
+    rotate:             45deg;
+    transition:         inline-size 90ms ease, block-size 120ms ease 90ms;
+  }
+
+  input[type='checkbox']:not([role='switch']):checked::after {
+    inline-size: 0.3rem;
+    block-size:  0.55rem;
+    transition:  inline-size 90ms ease 120ms, block-size 120ms ease;
+  }
+
+  /* radio dot: scales in from nothing with a soft overshoot */
+  input[type='radio'] {
+    border-radius: var(--radius-full);
+
+    &::after {
+      content:       '';
+      position:      absolute;
+      inset:         0.28rem;
+      border-radius: var(--radius-full);
+      background:    var(--paper);
+      scale:         0;
+      transition:    scale var(--snap) var(--immersive);
+    }
+
+    &:checked::after { scale: 1; }
   }
 
   /* — range slider: hairline track, squared ink thumb — */
@@ -348,6 +409,77 @@
     &:disabled::-moz-range-thumb     { background: var(--ink-faint); }
   }
 
+  /* — customizable select: the native <select> restyled as our popover menu —
+     appearance:base-select opts the control and its ::picker into full CSS
+     styling: the dropdown becomes a styleable popover of real <option>s with
+     keyboard nav and form participation, and no JS. The picker reuses the
+     popover's scale+fade in-and-out. Engines without base-select ignore the
+     whole @supports block and keep the platform control. */
+  @supports (appearance: base-select) {
+    select, ::picker(select) { appearance: base-select; }
+
+    select {
+      display:     inline-flex;
+      align-items: center;
+      gap:         var(--space-xs);
+      cursor:      pointer;
+
+      &::picker-icon {
+        margin-inline-start: auto;
+        color:      var(--ink-faint);
+        transition: rotate var(--snap);
+      }
+
+      &:open::picker-icon { rotate: 180deg; }
+      &:disabled { cursor: not-allowed; }
+    }
+
+    ::picker(select) {
+      border:             var(--border-hair);
+      background:         var(--paper);
+      box-shadow:         var(--shadow-2);
+      padding:            var(--space-xs);
+      margin-block-start: var(--space-xs);
+      transform-origin:   top;
+      opacity:            0;
+      scale:              0.97;
+      transition:         opacity var(--snap), scale var(--snap),
+                          display var(--snap) allow-discrete,
+                          overlay var(--snap) allow-discrete;
+    }
+
+    select:open::picker(select) {
+      opacity: 1;
+      scale:   1;
+
+      @starting-style {
+        opacity: 0;
+        scale:   0.97;
+      }
+    }
+
+    option {
+      display:     flex;
+      align-items: center;
+      gap:         var(--space-sm);
+      padding:     var(--space-xs) var(--space-sm);
+      cursor:      pointer;
+
+      &:is(:hover, :focus) {
+        outline:    none;
+        background: var(--color-accent-wash);
+      }
+
+      &:checked { font-weight: 600; }
+
+      &::checkmark {
+        content:             '✓';
+        margin-inline-start: auto;
+        color:               var(--color-accent);
+      }
+    }
+  }
+
   label {
     display:        block;
     font-size:      var(--text-sm);
@@ -378,17 +510,32 @@
        (or without ::details-content) fall back to an instant toggle */
     interpolate-size: allow-keywords;
 
+    /* The panel slides + fades as one: block-size opens the box,
+       opacity/translate carry the contents in behind it. content-visibility
+       flips discretely so the closed panel is skipped, not just hidden. */
     &::details-content {
       block-size: 0;
+      opacity:    0;
+      translate:  0 -0.25rem;
       overflow-y: clip;
       transition: block-size          var(--snap),
+                  opacity             var(--snap),
+                  translate           var(--snap),
                   content-visibility  var(--snap) allow-discrete;
     }
 
     &[open] {
-      &::details-content { block-size: auto; }
+      &::details-content {
+        block-size: auto;
+        opacity:    1;
+        translate:  0 0;
+      }
 
-      & > summary { border-block-end: var(--border-hair); }
+      & > summary {
+        border-block-end: var(--border-hair);
+
+        &::after { rotate: 45deg; } /* chevron swings from ▸ to ▾ */
+      }
     }
 
     & > :not(summary) {
@@ -397,10 +544,30 @@
   }
 
   summary {
-    padding:     var(--space-xs) var(--space-sm);
-    cursor:      pointer;
-    user-select: none;
-    transition:  background var(--snap);
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    gap:             var(--space-sm);
+    padding:         var(--space-xs) var(--space-sm);
+    cursor:          pointer;
+    user-select:     none;
+    list-style:      none; /* drop the native triangle for our own chevron */
+    transition:      background var(--snap);
+
+    &::-webkit-details-marker { display: none; }
+
+    /* right+bottom hairline borders form a corner; rotating it points the
+       chevron right when closed, down when open (see &[open] above) */
+    &::after {
+      content:          '';
+      flex:             none;
+      inline-size:      0.4rem;
+      block-size:       0.4rem;
+      border-inline-end: 1.5px solid var(--ink-faint);
+      border-block-end:  1.5px solid var(--ink-faint);
+      rotate:           -45deg;
+      transition:       rotate var(--snap);
+    }
 
     &:hover { background: var(--color-accent-wash); }
   }
@@ -415,18 +582,26 @@
     padding:    0;
     max-width:  min(90vw, 32rem);
     margin:     auto;
+    /* Closed state = the exit target. It doubles as the entry's
+       @starting-style, so the modal scales+fades symmetrically both ways.
+       display/overlay allow-discrete keep it in the top layer through the
+       out transition — no JS, the close animation just plays. */
     opacity:    0;
+    scale:      0.94;
     translate:  0 0.5rem;
-    transition: opacity var(--snap), translate var(--snap),
-                display var(--snap) allow-discrete,
-                overlay var(--snap) allow-discrete;
+    transition: opacity var(--immersive) 220ms, scale var(--immersive) 220ms,
+                translate var(--immersive) 220ms,
+                display 220ms allow-discrete,
+                overlay 220ms allow-discrete;
 
     &[open] {
       opacity:   1;
+      scale:     1;
       translate: 0 0;
 
       @starting-style {
         opacity:   0;
+        scale:     0.94;
         translate: 0 0.5rem;
       }
 

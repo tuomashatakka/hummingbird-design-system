@@ -5,15 +5,15 @@
 import {
   Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, Carousel, Center,
   Disclosure, Divider, Eyebrow, Grain, Grid, Heading, Icon, Lockup, Mark,
-  Medallion, Meta, Pillars, Popover, Progress, Row, Sheet, Skeleton, Spinner,
-  Tabs, Wrap,
+  Medallion, Meta, Pillars, Popover, Progress, Row, Sheet, Skeleton,
+  Spinner, Tabs, Wrap,
 } from 'hummingbird-design-system'
 import bgClear from 'Δ/assets/bg-mountain-clear.jpg'
 import type { ComponentEntry } from './components/ComponentDoc'
 import {
-  CheckboxDemo, DialogDemo, FieldDemo, InputDemo, NotificationDemo,
-  OverlayDemo, PanelDemo, RadioDemo, SearchFieldDemo, SelectDemo, SliderDemo,
-  SwitchDemo, TextareaDemo,
+  CheckboxDemo, ContextMenuDemo, DialogDemo, FieldDemo, InputDemo,
+  NotificationDemo, OverlayDemo, PanelDemo, RadioDemo, SearchFieldDemo,
+  SelectDemo, SliderDemo, SwitchDemo, TextareaDemo,
 } from './demos'
 
 
@@ -242,6 +242,18 @@ export const PRIMITIVES: ComponentEntry[] = [
     <Heading level={ 6 }>Popover</Heading>
     <p>Light-dismisses on outside click or Escape. Anchored to its trigger where supported.</p>
   </Popover>,
+  },
+  {
+    name:        'ContextMenu',
+    renders:     'button[popovertarget] + menu[popover]',
+    props:       'label, items, id?',
+    description: 'The Popover, narrowed to a list of actions. Each row carries popovertargetaction="hide", so selecting one closes the menu declaratively — only the consumer’s onSelect runs, no open/close JS. Links render as plain <a>; set destructive for the error tone.',
+    code:        `<ContextMenu label='Actions' items={ [
+  { label: 'Edit',      onSelect: () => {} },
+  { label: 'Duplicate', onSelect: () => {} },
+  { label: 'Delete',    onSelect: () => {}, destructive: true },
+] } />`,
+    preview: <ContextMenuDemo />,
   },
   {
     name:        'Divider',
