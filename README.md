@@ -16,6 +16,20 @@ packages/hummingbird   → the published package `hummingbird-design-system`
 apps/web               → the living documentation + portfolio site (Next.js)
 ```
 
+## Gallery
+
+Live oklch theming — every brand colour (accent, error, success, **info**) is an
+editable lightness/chroma/hue triplet, applied to `<html>` in real time:
+
+![Theme customizer with accent, error, success and info columns](assets/theming-info.png)
+
+Native-first controls: a `<select>` styled through `appearance: base-select` into an
+on-brand popover menu, self-drawing checkboxes/radios, and a `ContextMenu` composite that
+extends the Popover API — all pure CSS, with scale/fade in **and out** transitions.
+
+![Custom select menu open above self-labelling checkbox, radio and switch controls](assets/custom-select.png)
+![Context menu open with Edit, Duplicate and a destructive Delete action](assets/context-menu.png)
+
 ## Install
 
 ```bash
